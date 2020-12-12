@@ -77,18 +77,38 @@ export default function Maze(r, c){
     //tempCell.visited = true;
     cellStack.push(tempCell);
 
-    this.checkCell(tempCell.pos);
+    //debugger;
+    this.checkCell(tempCell.pos, [0,0]);
 
     //console.log("cellStack: "); console.log(cellStack);
     console.log("tempCell: "); console.log(tempCell);
     console.log("grid: "); console.log(this.grid);
   };
 
-  this.checkCell = function(pos){
-    let directions = [1, -1];
-
+  this.checkCell = function(pos, lastPos){
+    let directions = [
+      [0,  1],
+      [1,  0],
+      [0, -1],
+      [-1, 0]
+    ];
+    
     let x = pos[0];
     let y = pos[1];
+
+    let newDir = Math.floor(Math.random() *  directions.length);
+    let nextPos = [x + directions[newDir][0], y + directions[newDir][1]];;
+
+    console.log("pos: " + pos);
+    console.log("nextPos: " + nextPos);
+
+    while(nextPos[0] === lastPos[0] && nextPos[1] === lastPos[1]){
+      newDir = Math.floor(Math.random() *  directions.length);
+
+      nextPos = [x + directions[newDir][0], y + directions[newDir][1]];
+      console.log("nextPos: " + nextPos);
+
+    }
 
     if(this.grid[x][y].visited === false){
       console.log(this.grid[x][y]);
@@ -96,7 +116,7 @@ export default function Maze(r, c){
       this.grid[x][y].character = ' ';
 
       
-      this.checkCell(pos);
+      this.checkCell(nextPos, pos);
     }
     else{
       console.log('Cell visited.');
