@@ -87,6 +87,7 @@ export default function Maze(r, c){
     //set grid at current position
     this.grid[pos[0]][pos[1]].visited = true;
     this.grid[pos[0]][pos[1]].character = ' ';
+
     
     //select random direction
     let directions = [
@@ -104,7 +105,7 @@ export default function Maze(r, c){
         //create nextpos for clarity
         let nextPos = [pos[0] + directions[nextDir][0], pos[1] + directions[nextDir][1]];
 
-        //splice directions here...
+        //remove next direction so that we don't create a wall over top of the next spot...
         directions.splice(nextDir, 1);
         if(directions.length > 1){
           let wallPos = this.getAvailableCell(directions, pos);
