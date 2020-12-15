@@ -4,6 +4,8 @@ export default function Maze(r, c){
   let rows = r;
   let columns = c;
 
+  let wallCount = 0;
+
   this.initialize = function(){
     this.canvas = document.getElementById('myCanvas');
     this.ctx = this.canvas.getContext('2d');
@@ -37,10 +39,7 @@ export default function Maze(r, c){
     // this.grid[x][y].character = ' ';
 
     this.setVisitedCells();
-
     this.createMaze();
-
-
   };
 
   this.update = function(){
@@ -80,47 +79,44 @@ export default function Maze(r, c){
     //debugger;
     this.checkCell(tempCell.pos, [0,0]);
 
+    console.log(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15));
     //console.log("cellStack: "); console.log(cellStack);
     console.log("tempCell: "); console.log(tempCell);
     console.log("grid: "); console.log(this.grid);
   };
 
   this.checkCell = function(pos, lastPos){
+    //set grid at current position
+    this.grid[pos[0]][pos[1]].visited = true;
+    this.grid[pos[0]][pos[1]].character = 'x';
+    
+    //select random direction
     let directions = [
       [0,  1],
       [1,  0],
       [0, -1],
       [-1, 0]
     ];
-    
-    let x = pos[0];
-    let y = pos[1];
 
-    let newDir = Math.floor(Math.random() *  directions.length);
-    let nextPos = [x + directions[newDir][0], y + directions[newDir][1]];;
+    let nextDir = Math.floor(Math.random() * directions.length);
+    while(directions.length !== 0){
 
-    console.log("pos: " + pos);
-    console.log("nextPos: " + nextPos);
+      //see if next cell has been visited. if not,
+      if(this.grid[pos[0] + directions[nextDir][0]] [pos[1] + directions[nextDir][1]].visited === false){
+        //create nextpos for clarity
+        let nextPos = [pos[0] + directions[nextDir][0], pos[1] + directions[nextDir][1]];
 
-    while(nextPos[0] === lastPos[0] && nextPos[1] === lastPos[1]){
-      newDir = Math.floor(Math.random() *  directions.length);
-
-      nextPos = [x + directions[newDir][0], y + directions[newDir][1]];
-      console.log("nextPos: " + nextPos);
-
+        //call self recursively
+        this.checkCell(nextPos, pos);
+      } else {
+        //direction has already been visited, so take it out of dir array so it can't be reselected
+        directions.splice(nextDir, 1);
+        //get a new random dir
+        nextDir = Math.floor(Math.random() * directions.length);
+      }
     }
 
-    if(this.grid[x][y].visited === false){
-      console.log(this.grid[x][y]);
-      this.grid[x][y].visited = true;
-      this.grid[x][y].character = ' ';
-
-      
-      this.checkCell(nextPos, pos);
-    }
-    else{
-      console.log('Cell visited.');
-    }
-
+    //if we get down here, return because all directions have been taken
+    return;
   };
 }
