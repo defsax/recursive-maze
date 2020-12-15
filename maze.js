@@ -4,8 +4,6 @@ export default function Maze(r, c){
   let rows = r;
   let columns = c;
 
-  let wallCount = 0;
-
   this.initialize = function(){
     this.canvas = document.getElementById('myCanvas');
     this.ctx = this.canvas.getContext('2d');
@@ -88,7 +86,7 @@ export default function Maze(r, c){
   this.checkCell = function(pos, lastPos){
     //set grid at current position
     this.grid[pos[0]][pos[1]].visited = true;
-    this.grid[pos[0]][pos[1]].character = 'x';
+    this.grid[pos[0]][pos[1]].character = ' ';
     
     //select random direction
     let directions = [
@@ -98,13 +96,24 @@ export default function Maze(r, c){
       [-1, 0]
     ];
 
-    let nextDir = Math.floor(Math.random() * directions.length);
     while(directions.length !== 0){
-
+      let nextDir = Math.floor(Math.random() * directions.length);
+      
       //see if next cell has been visited. if not,
       if(this.grid[pos[0] + directions[nextDir][0]] [pos[1] + directions[nextDir][1]].visited === false){
         //create nextpos for clarity
         let nextPos = [pos[0] + directions[nextDir][0], pos[1] + directions[nextDir][1]];
+
+        //splice directions here...
+        directions.splice(nextDir, 1);
+        if(directions.length > 1){
+          let wallPos = this.getAvailableCell(directions, pos);
+          //console.log(wallPos);
+          if(wallPos !== undefined){
+            this.grid[pos[0] + wallPos[0]][pos[1] + wallPos[1]].visited = true;
+            this.grid[pos[0] + wallPos[0]][pos[1] + wallPos[1]].character = '■';
+          }
+        }
 
         //call self recursively
         this.checkCell(nextPos, pos);
@@ -118,5 +127,12 @@ export default function Maze(r, c){
 
     //if we get down here, return because all directions have been taken
     return;
+  };
+
+  this.getAvailableCell = function(directionList, position){
+    for(let i = 0; i < directionList.length; i++){
+      if(this.grid[position[0] + directionList[i][0]] [position[1] + directionList[i][1]].visited === false)
+        return directionList[i];
+    }
   };
 }
