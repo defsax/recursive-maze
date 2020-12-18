@@ -19,6 +19,7 @@ export default function Maze(r, c){
         let Cell = {
           pos: [i, j],
           character: '■',
+          color: 'black',
           visited: false
         };
         this.grid[i][j] = Cell;
@@ -45,7 +46,8 @@ export default function Maze(r, c){
 
     for(let i = 0; i < columns; i++){
       for(let j = 0; j < rows; j++)
-        utils.drawText(this.grid[i][j].character, this.canvas.width / columns * i - 2, this.canvas.height / rows * j + 13, "black", "fill", "25px Arial", "left", this.ctx);
+        // utils.drawText(this.grid[i][j].character, this.canvas.width / columns * i - 2, this.canvas.height / rows * j + 13, "black", "fill", "25px Arial", "left", this.ctx);
+        utils.drawRect(this.canvas.width / columns * i, this.canvas.height / rows * j, 10, 10, this.grid[i][j].color, 'white', this.ctx);
     }
   };
   
@@ -87,9 +89,10 @@ export default function Maze(r, c){
     //set grid at current position
     this.grid[pos[0]][pos[1]].visited = true;
     this.grid[pos[0]][pos[1]].character = ' ';
+    this.grid[pos[0]][pos[1]].color = 'white';
 
     
-    //select random direction
+    //direction list
     let directions = [
       [0,  1],
       [1,  0],
@@ -98,6 +101,7 @@ export default function Maze(r, c){
     ];
 
     while(directions.length !== 0){
+      //select random direction
       let nextDir = Math.floor(Math.random() * directions.length);
       
       //see if next cell has been visited. if not,
@@ -108,11 +112,13 @@ export default function Maze(r, c){
         //remove next direction so that we don't create a wall over top of the next spot...
         directions.splice(nextDir, 1);
         if(directions.length > 1){
+          
           let wallPos = this.getAvailableCell(directions, pos);
-          //console.log(wallPos);
+
           if(wallPos !== undefined){
             this.grid[pos[0] + wallPos[0]][pos[1] + wallPos[1]].visited = true;
             this.grid[pos[0] + wallPos[0]][pos[1] + wallPos[1]].character = '■';
+            this.grid[pos[0] + wallPos[0]][pos[1] + wallPos[1]].color = 'black';
           }
         }
 
