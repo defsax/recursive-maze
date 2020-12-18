@@ -16,6 +16,16 @@ export function drawText(text, w, h, color, type, font, align, context){
   }
 }
 
+export function drawRect(x, y, w, h, fill, stroke = 'black'){
+  context.beginPath();
+  context.rect(x, y, w, h);
+  context.fillStyle = fill;
+  context.fill();
+  context.strokeStyle = stroke;
+  context.stroke();
+  context.closePath();
+}
+
 export function getRandomColor() {
   var letters = '0123456789ABCDEF';
   var color = '#';
