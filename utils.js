@@ -16,7 +16,7 @@ export function drawText(text, w, h, color, type, font, align, context){
   }
 }
 
-export function drawRect(x, y, w, h, fill, stroke = 'black'){
+export function drawRect(x, y, w, h, fill, stroke = 'black', context){
   context.beginPath();
   context.rect(x, y, w, h);
   context.fillStyle = fill;
