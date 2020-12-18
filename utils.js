@@ -21,7 +21,16 @@ export function drawRect(x, y, w, h, fill, stroke = 'black', context){
   context.rect(x, y, w, h);
   context.fillStyle = fill;
   context.fill();
-  context.strokeStyle = stroke;
+  // context.strokeStyle = stroke;
+  // context.stroke();
+  context.closePath();
+}
+
+export function drawLine(x, y, dx, dy, context){
+  context.beginPath();
+  context.moveTo(x, y);
+  context.lineTo(dx, dy);
+  context.lineWidth = 1;
   context.stroke();
   context.closePath();
 }
