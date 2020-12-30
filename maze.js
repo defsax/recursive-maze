@@ -29,7 +29,7 @@ export default function Maze(r, c){
         this.grid[i][j] = Cell;
       }
     }
-    this.setVisitedCells();
+    this.setBorders();
     this.createMaze();
   };
 
@@ -42,11 +42,11 @@ export default function Maze(r, c){
       utils.drawLine(offsetX * wallList[i].x, offsetY * wallList[i].y, offsetX * wallList[i].dx, offsetY * wallList[i].dy, this.ctx);
     }
 
-    for(let i = 0; i < columns; i++){
-      for(let j = 0; j < rows; j++)
-        // utils.drawText(this.grid[i][j].character, this.canvas.width / columns * i - 2, this.canvas.height / rows * j + 13, "black", "fill", "25px Arial", "left", this.ctx);
-        utils.drawRect(this.canvas.width / columns * i, this.canvas.height / rows * j, 10, 10, this.grid[i][j].color, 'white', this.ctx);
-    }
+    // for(let i = 0; i < columns; i++){
+    //   for(let j = 0; j < rows; j++)
+    //     // utils.drawText(this.grid[i][j].character, this.canvas.width / columns * i - 2, this.canvas.height / rows * j + 13, "black", "fill", "25px Arial", "left", this.ctx);
+    //     utils.drawRect(this.canvas.width / columns * i, this.canvas.height / rows * j, 10, 10, this.grid[i][j].color, 'white', this.ctx);
+    // }
   };
   
   this.resize = function(w, h){
@@ -54,18 +54,17 @@ export default function Maze(r, c){
     this.canvas.height = h;
   };
 
-  this.setVisitedCells = function(){
-    //set borders to 'visited' so they remain untouched
+  this.setBorders = function(){
+    //create walls in wallList
 
-    for(let i = 0; i < columns; i++){
-      this.grid[i][0].visited = true;
-      this.grid[i][columns - 1].visited = true;
-    }
-
-    for(let i = 0; i < rows; i++){
-      this.grid[0][i].visited = true;
-      this.grid[rows - 1][i].visited = true;
-    }
+    //left
+    wallList.push({x: 0, y: 0, dx: 0, dy: rows});
+    //bottom
+    wallList.push({x: 0, y: rows, dx: columns, dy: rows});
+    //right
+    wallList.push({x: columns, y: 0, dx: columns, dy: rows});
+    //top
+    wallList.push({x: 0, y: 0, dx: columns, dy: 0});
   };
 
   this.createMaze = function(){
@@ -74,42 +73,10 @@ export default function Maze(r, c){
     //tempCell.visited = true;
     cellStack.push(tempCell);
 
-    //debugger;
     this.checkCell({x: tempCell.pos[0], y: tempCell.pos[1]}, {x: tempCell.pos[0], y: tempCell.pos[1]});
-    this.drawWalls();
+    //this.drawWalls();
 
-    console.log(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15));
-    //console.log("cellStack: "); console.log(cellStack);
-    console.log("tempCell: "); console.log(tempCell);
-    console.log("grid: "); console.log(this.grid);
-  };
-
-  this.drawWalls = function(){
-    const directions = [
-      [0,  1],
-      [1,  0],
-      [0, -1],
-      [-1, 0]
-    ];
-
-    for(let i = 0; i < columns; i++){
-      for(let j = 0; j < rows; j++){
-        for(let k = 0; k < directions.length; k++){
-          for(let l = 0; l < this.grid[i][j].path.length; l++){
-            //console.log(directions[k]);
-            // console.log(this.grid[i][j].pos[directions[k][0]][directions[k][1]]);
-            if(this.grid[i][j].path[l] === this.grid[i + directions[k][0]][j + directions[k][1]].pos){
-               console.log('hit');
-               let x = this.canvas.width / columns * i;
-               let y = this.canvas.height / rows * j;
-               let width = x + this.canvas.width /columns;
-               let height = y + this.canvas.width / rows;
-               utils.drawLine(x, y, width, height, this.ctx);
-            }
-          }
-        }
-      }
-    }
+    //console.log(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15));
   };
 
   const randomizeDirections = function(){
@@ -131,7 +98,7 @@ export default function Maze(r, c){
   };
 
   this.checkCell = function(pos, lastPos){
-    //set grid at current position
+    //set grid attribs at current position
     this.grid[pos.x][pos.y].visited = true;
     this.grid[pos.x][pos.y].character = ' ';
     this.grid[pos.x][pos.y].color = 'white';
@@ -139,6 +106,7 @@ export default function Maze(r, c){
     //direction list, randomize
     let directions = randomizeDirections();
 
+    //loop through each adjacent cell of current cell
     for(let i of directions){
 
       //set next position
@@ -147,8 +115,15 @@ export default function Maze(r, c){
         y: pos.y + i[1]
       };
       
+      //console.log(nextPos);
+      //console.log(this.grid[nextPos.x][nextPos.y]);
+      //see if next cell is a negative or larger than maze size
+      // if(nextPos.x < 0 || nextPos.x > columns || nextPos.y < 0 || nextPos.y > rows)
+      if(this.grid[nextPos.x] === undefined || this.grid[nextPos.x][nextPos.y] === undefined){
+        continue;
+      }
       //see if next cell has been visited. if not,
-      if(this.grid[nextPos.x][nextPos.y].visited === false){
+      else if(this.grid[nextPos.x][nextPos.y].visited === false){
         //console.log(nextPos);console.log(' not visited.');
         this.checkCell(nextPos, pos);
       } 
