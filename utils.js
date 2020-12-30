@@ -30,7 +30,7 @@ export function drawLine(x, y, dx, dy, context){
   context.beginPath();
   context.moveTo(x, y);
   context.lineTo(dx, dy);
-  context.lineWidth = 1;
+  context.lineWidth = 2;
   context.stroke();
   context.closePath();
 }
