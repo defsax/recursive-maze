@@ -2,8 +2,8 @@ import Maze from './maze.js';
 
 window.addEventListener("load", function(){
   //Modify canvas size AND grid size here:
-  const WIDTH = 600;
-  const HEIGHT = 600;
+  const WIDTH = 800;
+  const HEIGHT = 800;
   const rows = 10;
   const columns = 10;
   
