@@ -12,7 +12,7 @@ export default function Maze(r, c){
     [0,   1], //down
     [-1,  0]  //left
   ];
-
+ 
   const COMPASS = [
     'up',
     'right',
